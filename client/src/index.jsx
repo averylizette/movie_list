@@ -1,8 +1,5 @@
-import React from 'react'
-import App from './components/app.jsx'
-import ReactDOM from 'react-dom'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './components/app.jsx';
 
-
-ReactDOM.render(<App/>, document.getElementById('app')); //TODO FIX
-//console.log("hey")
-//Need export?
+ReactDOM.render(<App/>, document.getElementById('app'))

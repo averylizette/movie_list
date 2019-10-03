@@ -1,94 +1,77 @@
 import React from 'react'
 import movies from '../moviedata.js'
+import axios from 'axios';
 
 
 class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            movieList: movies,
-            matched: [],
-            submit: false
-        };
-        this.handleChange = this.handleChange.bind(this);
+            movies: movies,
+            value: "",
+        }
+        this.getMovies = this.getMovies.bind(this);
+        this.handleInput = this.handleInput.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-        
+    
+   getMovies() {
+    axios.get('/all')
+    .then((response)=>{
+        this.setState({movies: response.data})
+      //console.log(response.data);
+    })
+    .catch((error)=> {
+      console.log(error);
+    })
+   }
 
-    handleChange(event) {
-        var match = movies.filter((movie) => {
-            var lcMovie = movie.toLocaleLowerCase();
-            var lcResult = event.target.value.toLocaleLowerCase()
-            if (lcMovie.includes(lcResult)) {
-                return movie;
-            }
-        });
-        this.setState({
-            matched: match,
-            submit: false,
-        })  
-    }
- 
-   
-        handleSubmit(event) {
-            event.preventDefault();
-            this.setState({submit:true})     
-        }
-      
+   componentDidMount(){
+       this.getMovies()
+   }
 
+   handleInput(event) {
+       this.setState({value: event.target.value})
+       console.log(this.state.value)
+   }
+
+   handleSubmit(event) {
+        event.preventDefault();
+        axios.post('/addMovie', {
+            movieName: this.state.value,
+            watched: 'f'
+        })
+        .then((response) => {
+            // console.log('there was no error, u good ');
+            console.log(response.data);
+          })
+          .catch((error) => {
+            console.log('there was an error: ', error);
+          });
+   }
 
     render() {
 
-        const submitted = this.state.submit;
-        let results;
-
-        if (submitted) {
-        results = (
-         <div>Your matched results:
-                <ul>
-                {this.state.matched.map((result) => {
-                    return <li>{result}</li>
-                })}
-                </ul>
-            </div>)
-        } else if (this.state.matched.length === 0) {
-         results = <div>Sorry, we didn't find any matches</div>;
-
-        } else {
-            results = <div/>
-        }
-        
 
       return (
         <div>
-             <input type="text" className="input" onChange={this.handleChange} placeholder="Search if we have your movie..." />
-             <input type="submit" value="Submit" onClick={this.handleSubmit}/>
-            <div>
-                {results}
-            </div>
-            <div> This is my React Movie List!!</div>
+            <form>
+                <label>
+                     Add movie:
+                    <input type="text" value={this.state.value} onChange={this.handleInput}/>
+                </label>
+                <input type="submit" value="Submit" onClick={this.handleSubmit}/>
+            </form>
+            <div>my movies:</div>
             <ol>
-                <li>Mean Girls</li>
-                <li>Hackers</li>
-                <li>Totoro</li>
-                <li>Winnie the Pooh</li>
-                <li>Spring Breakers</li>
-                <li>Django</li>
-           </ol> 
+            {this.state.movies.map((movie) => {
+                return <li>{movie.name}</li>
+            })}
+            </ol>
         </div>)
     }
   }
 
 
   export default App
-
-
-
-//   <form onSubmit={this.handleSubmit}>
-//   <label>
-//     Enter Movie List Title:
-//   <input type="text" value={this.state.value} onChange={this.handleChange} />
-//   </label>
-//   <input type="submit" value="Submit" />
-// </form>
