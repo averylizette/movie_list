@@ -3,7 +3,7 @@ const mysql = require('mysql');
 var connection = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',
-  password : 'thankyou',
+  password : 'FILL ME IN',
   database : 'movielist'
 });
  
