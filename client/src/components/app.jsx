@@ -29,6 +29,7 @@ class App extends React.Component {
 
    componentDidMount(){
        this.getMovies()
+       //
    }
 
    handleInput(event) {
